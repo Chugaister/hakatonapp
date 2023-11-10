@@ -15,3 +15,20 @@ class Job(Base):
     description = Column(String(1024))
     salary = Column(String(128))
     disable_category = Column(String(128))
+    job_type = Column(String(128))
+    source_url = Column(String(128))
+
+    def to_schema(self) -> schemas.Job:
+        return schemas.Job(
+            id=self.id,
+            title=self.title,
+            location=self.location,
+            description=self.description,
+            salary=self.salary,
+            disable_category=self.disable_category,
+            job_type=self.job_type,
+            source_url=self.source_url
+        )
+
+    def __repr__(self) -> str:
+        return f"<{self.id}, {self.title}, {self.salary}>"
