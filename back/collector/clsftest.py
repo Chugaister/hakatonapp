@@ -59,4 +59,4 @@ if __name__ == "__main__":
         disable_category=None
     )
     classify(test_job)
-    print(test_job.disable_category)
+    print(test_job.disability_category)

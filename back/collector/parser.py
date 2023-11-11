@@ -1,5 +1,8 @@
 import requests
+from random import shuffle
 from lxml import html
+from time import sleep
+from geopy.geocoders import Nominatim
 
 
 from db import models, Session
@@ -46,7 +49,7 @@ def parse_page_workua(page_url: str) -> list[models.Job]:
 def main():
     session = Session()
     jobs = []
-    for page in range(1, 10):
+    for page in range(10, 46):
         print("parsing page", page)
         jobs.extend(parse_page_workua(f"https://www.work.ua/jobs-lviv/?disability=1&page={page}"))
         session.add_all(jobs)
@@ -56,11 +59,35 @@ def main():
 def to_json():
     from json import dump
     session = Session()
-    jobs = session.query(models.Job).all()[:10]
+    jobs = session.query(models.Job).all()
     dataset = [job.to_schema().model_dump() for job in jobs]
     with open("dataset.json", "w", encoding="utf-8") as file:
         dump(dataset, file, ensure_ascii=False, indent=4)
 
 
+def address_to_coordinates(address):
+    geolocator = Nominatim(user_agent="your_app_name")
+    location = geolocator.geocode(address)
+    if location:
+        coordinates_string = f"{location.latitude},{location.longitude}"
+        return coordinates_string
+    else:
+        print("Location not found for the given address.")
+        return None
+
+
+def define_coords():
+    session = Session()
+    jobs = session.query(models.Job).filter(models.Job.coordinates.is_(None)).all()
+    shuffle(jobs)
+    for job in jobs:
+        sleep(1)
+        job.coordinates = address_to_coordinates(job.location)
+        print(job.id, job.coordinates)
+        session.commit()
+
+
 if __name__ == "__main__":
-    pass
+    define_coords()
+    #define_coords()
+

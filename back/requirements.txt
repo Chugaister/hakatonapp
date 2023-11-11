@@ -5,3 +5,5 @@ requests~=2.31.0
 beautifulsoup4~=4.12.2
 lxml~=4.9.3
 pydantic~=2.4.2
+bardapi~=0.1.38
+geopy~=2.4.0

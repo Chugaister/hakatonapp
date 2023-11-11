@@ -4,7 +4,7 @@ from app.app import app
 
 
 def main():
-    run(app, host="127.0.0.1", port=80)
+    run(app, host="192.168.1.105", port=80)
 
 
 if __name__ == "__main__":
